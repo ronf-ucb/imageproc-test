@@ -59,7 +59,11 @@ if __name__ == '__main__':
 
         print('\nI: Testing radio communication:')
         ts.test_radio()
-        
+        print "positive motor direction"
+        ts.test_hall(1)
+        ts.test_motor(1,600)
+        raw_input("\n Press any key to read new Hall angle")
+        ts.test_hall(1)
         while True:
             raw_input("II. Press any key to test gyro...")
             ts.test_gyro(1)

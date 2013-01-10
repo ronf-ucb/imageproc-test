@@ -111,7 +111,7 @@ class TestSuite():
         elif typeID == kTestDFlashCmd:
             print ''.join(rf_data[2:])
 #            print rf_data[2:]
-#            print map(ord,rf_data[2:])
+            print map(ord,rf_data[2:])
 #            print map(str,rf_data[2:])
         elif typeID == kTestMotorCmd:
             print ''.join(rf_data[2:])

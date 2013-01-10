@@ -246,12 +246,11 @@ unsigned char test_dflash(unsigned char type, unsigned char status,
     strcpy(mem_data + strlen(str1) + strlen(str2), str3);
     strcpy(mem_data + strlen(str1) + strlen(str2) + strlen(str3), str4);
 
-    // Write into dfmem
-    dfmemWrite((unsigned char *)(mem_data), sizeof(mem_data), page, 0, 1);
+  
 
     // ---------- string 1 -----------------------------------------------------
     // Get a new packet from the pool
-    packet = radioRequestPacket(strlen(str1));
+    packet = radioRequestPacket(strlen(str1)+strlen(str2));
     if(packet == NULL) return 0;
     macSetDestAddr(packet, RADIO_DEST_ADDR);
 
@@ -260,12 +259,17 @@ unsigned char test_dflash(unsigned char type, unsigned char status,
     paySetStatus(pld, STATUS_UNUSED);
     paySetType(pld, type);
 
+// erase memory first and verify memory is erased
+	dfmemErasePage(page);
     // Read out dfmem into the payload
-    dfmemRead(page, 0, strlen(str1), payGetData(pld));
+    dfmemRead(page, 0, strlen(str1)+strlen(str2), payGetData(pld));
 
     // Enqueue the packet for broadcast
     while(!radioEnqueueTxPacket(packet));
 
+
+  // Write into dfmem
+    dfmemWrite((unsigned char *)(mem_data), sizeof(mem_data), page, 0, 1);
     // ---------- string 2 -----------------------------------------------------
     // Get a new packet from the pool
     packet = radioRequestPacket(strlen(str2));
