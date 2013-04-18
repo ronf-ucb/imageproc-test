@@ -37,6 +37,7 @@
 #include "uart_driver.h"
 #include "ppool.h"
 #include "carray.h"
+#include "wii.h"
 
 #include <stdlib.h>
 
@@ -78,9 +79,10 @@ int main() {
 
     uart_tx_packet = NULL;
     uart_tx_flag = 0;
-    uartInit(&cmdPushFunc);
+    // uartInit(&cmdPushFunc);
 
-    amsEncoderSetup();
+    wiiSetupBasic();
+    //amsEncoderSetup();
     mpuSetup(1);
     tiHSetup();
     adcSetup();

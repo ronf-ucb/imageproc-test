@@ -52,6 +52,7 @@ DEST_ADDR = '\x21\x02'
 motorgains = [1800,0,400,0,0,\
               1800,0,400,0,0] #TUNE THESE
 duration = 2000
+sensitvity = 255
 
 
 if __name__ == '__main__':
@@ -98,6 +99,15 @@ if __name__ == '__main__':
                 ts.SetProfile()
             elif keypress == 'a':
                 ts.test_amspos()
+            elif keypress == 'b':
+                ts.test_wiiblob()
+
+            elif keypress == 's':
+                print 'Current sensitvity '+str(sensitvity)+', New sensitvity: ',
+                sensitvity = int(raw_input())    
+                print 'Current sensitvity '+str(sensitvity)
+                ts.test_wiisense(sensitvity)
+
             elif keypress == 'q':
                 ts.quit()
             else:

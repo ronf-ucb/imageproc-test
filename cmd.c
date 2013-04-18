@@ -19,6 +19,7 @@
 #include "pid-ip2.5.h"
 #include "ams-enc.h"
 #include "carray.h"
+#include "wii.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -37,6 +38,8 @@ extern volatile CircArray fun_queue;
 static unsigned char cmdNop(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static unsigned char cmdWhoAmI(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static unsigned char cmdGetAMSPos(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+static unsigned char cmdGetWiiBlobs(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+static unsigned char cmdSetWiiSensitivity(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 
 //Motor and PID functions
 static unsigned char cmdSetThrustOpenLoop(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
@@ -66,6 +69,8 @@ void cmdSetup(void) {
     cmd_func[CMD_SET_VEL_PROFILE] = &cmdSetVelProfile;
     cmd_func[CMD_WHO_AM_I] = &cmdWhoAmI;
     cmd_func[CMD_GET_AMS_POS] = &cmdGetAMSPos;
+    cmd_func[CMD_GET_WII_BLOBS] = &cmdGetWiiBlobs;
+    cmd_func[CMD_SET_WII_SENSE] = &cmdSetWiiSensitivity;
     cmd_func[CMD_ZERO_POS] = &cmdZeroPos;
 
 }
@@ -112,6 +117,24 @@ unsigned char cmdGetAMSPos(unsigned char type, unsigned char status,
             sizeof(motor_count), (unsigned char *)motor_count, 0);
     return 1;
 }
+
+unsigned char cmdGetWiiBlobs(unsigned char type, unsigned char status,
+        unsigned char length, unsigned char *frame){
+    WiiBlob blobs[4];
+    wiiGetData(blobs);
+    delay_ms(50);
+    radioSendData(RADIO_DEST_ADDR, status, CMD_GET_WII_BLOBS,
+            sizeof(blobs), (unsigned char *)blobs, 0);
+    return 1;
+}
+
+unsigned char cmdSetWiiSensitivity(unsigned char type, unsigned char status, 
+        unsigned char length, unsigned char *frame){
+    char sensitivity = frame[0];
+    wiiSetupAdvance(sensitivity, 0x33);
+    return 1;
+}
+
 
 // ==== Motor PID Commands ======================================================================================
 // ================================================================================================================ 

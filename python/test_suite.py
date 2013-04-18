@@ -38,6 +38,8 @@ PIDStartMotors  =   0x81
 PIDStopMotors   =   0x8E
 SetPIDGains     =   0x82
 GetAMSPos       =   0x84
+GetWiiBlobs     =   0x85
+SetWiiSense     =   0x86
 WhoAmI          =   0x8D                    
 zeroPos         =   0x8F                    
 
@@ -123,6 +125,12 @@ class TestSuite():
             print 'Previous motor positions:',
             motor = unpack('=2l', rf_data[2:])
             print 'motor 0= %d' %motor[0] + ' motor 1= %d' %motor[1]
+        elif typeID == GetWiiBlobs:
+
+            blob = unpack('=12h', rf_data[2:])
+            for i in range(0,4):
+                print 'Blob %d ' %i + 'X: %d ' %blob[i*3] + 'Y: %d ' %blob[i*3+1] + 'S: %d ' %blob[i*3+2]
+
 
     def test_radio(self):
         '''
@@ -150,6 +158,19 @@ class TestSuite():
             self.radio.tx(dest_addr=self.dest_addr, data=header)
             time.sleep(0.2)
             # self.print_packet(self.last_packet)
+
+    def test_wiiblob(self):
+        header = chr(kStatusUnused) + chr(GetWiiBlobs)
+        if(self.check_conn()):
+            self.radio.tx(dest_addr=self.dest_addr, data=header)
+            time.sleep(0.2)
+
+    def test_wiisense(self, sensitivity):
+        header = chr(kStatusUnused) + chr(SetWiiSense)
+        data_out = header + ''.join(pack("h",*sensitivity))
+        if(self.check_conn()):
+            self.radio.tx(dest_addr=self.dest_addr, data=data_out)
+            time.sleep(0.2)
 
 
     def test_motorop(self):

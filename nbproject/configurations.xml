@@ -44,6 +44,8 @@
         <itemPath>../imageproc-lib/uart_driver.h</itemPath>
         <itemPath>../imageproc-lib/battery.c</itemPath>
         <itemPath>../imageproc-lib/battery.h</itemPath>
+        <itemPath>../imageproc-lib/wii.c</itemPath>
+        <itemPath>../imageproc-lib/wii.h</itemPath>
       </logicalFolder>
       <itemPath>interrupts.c</itemPath>
       <itemPath>main.c</itemPath>
