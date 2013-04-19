@@ -121,8 +121,9 @@ unsigned char cmdGetAMSPos(unsigned char type, unsigned char status,
 unsigned char cmdGetWiiBlobs(unsigned char type, unsigned char status,
         unsigned char length, unsigned char *frame){
     WiiBlob blobs[4];
+    wiiStartAsyncRead(); //Testing
+    delay_ms(5);
     wiiGetData(blobs);
-    delay_ms(50);
     radioSendData(RADIO_DEST_ADDR, status, CMD_GET_WII_BLOBS,
             sizeof(blobs), (unsigned char *)blobs, 0);
     return 1;
