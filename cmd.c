@@ -30,7 +30,9 @@ void cmdError(void);
 
 extern pidPos pidObjs[NUM_PIDS];
 extern EncObj encPos[NUM_ENC];
+extern wiiSteer wiiSteering;
 extern volatile CircArray fun_queue;
+
 
 /*-----------------------------------------------------------------------------
  *          Declaration of static functions
@@ -67,11 +69,14 @@ void cmdSetup(void) {
     cmd_func[CMD_PID_START_MOTORS] = &cmdPIDStartMotors;
     cmd_func[CMD_PID_STOP_MOTORS] = &cmdPIDStopMotors;
     cmd_func[CMD_SET_VEL_PROFILE] = &cmdSetVelProfile;
+    cmd_func[CMD_ZERO_POS] = &cmdZeroPos;
     cmd_func[CMD_WHO_AM_I] = &cmdWhoAmI;
     cmd_func[CMD_GET_AMS_POS] = &cmdGetAMSPos;
     cmd_func[CMD_GET_WII_BLOBS] = &cmdGetWiiBlobs;
     cmd_func[CMD_SET_WII_SENSE] = &cmdSetWiiSensitivity;
-    cmd_func[CMD_ZERO_POS] = &cmdZeroPos;
+    cmd_func[CMD_ENABLE_WII_STEER] = &cmdEnableWiiSteering;
+    cmd_func[CMD_SET_WII_GAINS] = &cmdSetWiiGains;
+    cmd_func[CMD_SET_WII_POSITION] = &cmdSetWiiPosition;
 
 }
 
@@ -128,6 +133,31 @@ unsigned char cmdGetWiiBlobs(unsigned char type, unsigned char status,
             sizeof(blobs), (unsigned char *)blobs, 0);
     return 1;
 }
+
+// Commands: enable, set gains, calibrate position
+unsigned char cmdEnableWiiSteering(unsigned char type, unsigned char status,
+        unsigned char length, unsigned char *frame){
+    wiiSteering.enableFlag = 1;
+}
+
+unsigned char cmdSetWiiGains(unsigned char type, unsigned char status,
+        unsigned char length, unsigned char *frame){
+    int velGain = frame[0] + (frame[1] << 8);
+    int thetaGain = frame[2] + (frame[3] << 8);
+    wiiSteering.kV = velGain;
+
+}
+
+unsigned char cmdSetWiiPosition(unsigned char type, unsigned char status,
+        unsigned char length, unsigned char *frame){
+    getWiiError();
+    wiiSteering.xDistNominal = wiiSteering.xDist;
+    wiiSteering.yDistNominal = wiiSteering.yDist;
+    wiiSteering.centroidNominal[0] = wiiSteering.centroid[0];
+    wiiSteering.centroidNominal[1] = wiiSteering.centroid[1];
+
+}
+
 
 unsigned char cmdSetWiiSensitivity(unsigned char type, unsigned char status, 
         unsigned char length, unsigned char *frame){

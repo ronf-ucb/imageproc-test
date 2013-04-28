@@ -82,7 +82,7 @@ int main() {
     // uartInit(&cmdPushFunc);
 
     wiiSetupBasic();
-    //amsEncoderSetup();
+    amsEncoderSetup();
     mpuSetup(1);
     tiHSetup();
     adcSetup();

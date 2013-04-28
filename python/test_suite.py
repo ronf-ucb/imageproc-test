@@ -41,7 +41,10 @@ GetAMSPos       =   0x84
 GetWiiBlobs     =   0x85
 SetWiiSense     =   0x86
 WhoAmI          =   0x8D                    
-zeroPos         =   0x8F                    
+zeroPos         =   0x8F
+enableWiiSteer  =   0x90
+setWiiGains     =   0x91
+setWiiPosition  =   0x92                    
 
 #kImWidth = 160
 #kImHeight = 100
@@ -167,10 +170,14 @@ class TestSuite():
 
     def test_wiisense(self, sensitivity):
         header = chr(kStatusUnused) + chr(SetWiiSense)
+        sensitivity = [sensitivity]
         data_out = header + ''.join(pack("h",*sensitivity))
         if(self.check_conn()):
             self.radio.tx(dest_addr=self.dest_addr, data=data_out)
             time.sleep(0.2)
+
+    def enableSteering(self)
+        header = chr(kStatusUnused) + chr(enableWiiSteer)
 
 
     def test_motorop(self):

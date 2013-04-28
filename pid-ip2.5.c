@@ -23,6 +23,9 @@
 #include "uart_driver.h"
 #include "ppool.h"
 #include "cmd.h"
+#include "wii.h"
+
+ #include "wiiSteering.c"        //For Tidiness for now
 
 #include <stdlib.h> // for malloc
 #include "init.h"  // for Timer1
@@ -266,11 +269,19 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     int j;
     LED_3 = 1;
     interrupt_count++;
-
+    if(interrupt_count ==2){
+        wiiStartAsyncRead();
+    }
     if(interrupt_count == 4) {
         mpuBeginUpdate();
         amsEncoderStartAsyncRead();
     } else if(interrupt_count == 5) {
+
+        if(wiiSteering.enableFlag == 1){
+            getWiiError();
+            setWiiSteer();
+        }
+
         interrupt_count = 0;
 
         if (t1_ticks++ == T1_MAX) {
@@ -293,17 +304,17 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
         }
 
         LED_3 = 1;
-        if(pidObjs[0].onoff && !uart_tx_flag) {
-            uart_tx_packet = ppoolRequestFullPacket(sizeof(telemStruct_t));
-            if(uart_tx_packet != NULL) {
-                //time|Left pstate|Right pstate|Commanded Left pstate| Commanded Right pstate|DCR|DCL|RBEMF|LBEMF|Gyrox|Gyroy|Gyroz|Ax|Ay|Az
-                //bytes: 4,4,4,4,4,2,2,2,2,2,2,2,2,2,2
-                paySetType(uart_tx_packet->payload, CMD_PID_TELEMETRY);
-                paySetStatus(uart_tx_packet->payload, 0);
-                pidUpdateTelem((telemStruct_t*)payGetData(uart_tx_packet->payload));
-                uart_tx_flag = 1;
-            }
-        }
+        // if(pidObjs[0].onoff && !uart_tx_flag) {
+        //     uart_tx_packet = ppoolRequestFullPacket(sizeof(telemStruct_t));
+        //     if(uart_tx_packet != NULL) {
+        //         //time|Left pstate|Right pstate|Commanded Left pstate| Commanded Right pstate|DCR|DCL|RBEMF|LBEMF|Gyrox|Gyroy|Gyroz|Ax|Ay|Az
+        //         //bytes: 4,4,4,4,4,2,2,2,2,2,2,2,2,2,2
+        //         paySetType(uart_tx_packet->payload, CMD_PID_TELEMETRY);
+        //         paySetStatus(uart_tx_packet->payload, 0);
+        //         pidUpdateTelem((telemStruct_t*)payGetData(uart_tx_packet->payload));
+        //         uart_tx_flag = 1;
+        //     }
+        // }
     }
     LED_3 = 0;
     _T1IF = 0;

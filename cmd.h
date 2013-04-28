@@ -18,6 +18,9 @@
 #define CMD_WHO_AM_I            0x8D
 #define CMD_PID_STOP_MOTORS     0x8E
 #define CMD_ZERO_POS            0x8F
+#define CMD_ENABLE_WII_STEER    0x90
+#define CMD_SET_WII_GAINS       0x91
+#define CMD_SET_WII_POSITION    0x92
 
 void cmdSetup(void);
 void cmdPushFunc(MacPacket rx_packet);
