@@ -1,29 +1,23 @@
-extern WiiBlob wiiBlobs[4]
+#include "wii.h"
+#include "led.h"
+#include "pid-ip2.5.h"
+#include "wiiSteering.h"
 
-typedef struct{
-    int centroid[2];  //x,y
-    int centroidNominal[2];
-    int xDist;
-    int yDist;
-    int kTheta;
-    int kV;
-    int xDistNominal;
-    int yDistNominal;
-    char centroidFlag;
-    char faultFlag;
-    char enableFlag;
-} wiiSteer;
+extern WiiBlob wiiBlobs[4];
 
 wiiSteer wiiSteering;
 
 void getWiiError(void){
     
-    int temp;
-    char blobCount = 0 , i;
+    int temp, i;
+    char blobCount = 0;
+
+    wiiSteering.centroid[0]=0;
+    wiiSteering.centroid[1]=0;
 
     //Blob math
     for(i=0;i<4;i++){
-        if(wiiSteering.size[i] |= 255){
+        if(wiiBlobs[i].size != 255){
             blobCount++;
             wiiSteering.centroid[0] += wiiBlobs[i].x;
             wiiSteering.centroid[1] += wiiBlobs[i].y;
@@ -31,26 +25,28 @@ void getWiiError(void){
     }
     if(blobCount == 0){
         wiiSteering.faultFlag = 1;
+        wiiSteering.centroid[0]=0;
+        wiiSteering.centroid[1]=0;
     } else {
         wiiSteering.faultFlag = 0;
+        wiiSteering.centroid[0]=wiiSteering.centroid[0]/blobCount;
+        wiiSteering.centroid[1]=wiiSteering.centroid[1]/blobCount;
     }
-    wiiSteering.centroid[0]=wiiSteering.centroid[0]/blobCount;
-    wiiSteering.centroid[1]=wiiSteering.centroid[1]/blobCount;
 
     if(blobCount == 2){
-       temp = wiiBlobs.[1].x - wiiBlobs.[0].x;
-       centroidFlag = 0;
+       temp = wiiBlobs[1].x - wiiBlobs[0].x;
+       wiiSteering.centroidFlag = 1;
        
        if(temp<0){ // If right blob idx = 0
            wiiSteering.xDist = -temp;
-           wiiSteering.yDist = wiiBlobs.[1].y - wiiBlobs.[0].y;
+           wiiSteering.yDist = wiiBlobs[1].y - wiiBlobs[0].y;
        } else {
            wiiSteering.xDist = temp;
-           wiiSteering.yDist = wiiBlobs.[0].y - wiiBlobs.[1].y;
+           wiiSteering.yDist = wiiBlobs[0].y - wiiBlobs[1].y;
        }
    } else {
     // Centroid based wiiSteering
-    centroidFlag = 1;
+    wiiSteering.centroidFlag = 1;
    }
 }
 
@@ -65,8 +61,8 @@ void setWiiSteer(void){
         LED_1 = 1; LED_2 = 0; LED_3 = 0;   
     } 
     if(wiiSteering.centroidFlag == 1 && wiiSteering.faultFlag == 0){ //Going to need gain divisor
-        v = (wiiSteering.centroid[1] - wiiSteering.centroidNominal[1])*wiiSteering.kV;
-        omega = (wiiSteering.centroid[0] - wiiSteering.centroidNominal[0])*wiiSteering.kTheta;
+        v = ((wiiSteering.centroidNominal[1] - wiiSteering.centroid[1])*wiiSteering.kV)/16;
+        omega = ((wiiSteering.centroid[0] - wiiSteering.centroidNominal[0])*wiiSteering.kTheta)/16;
         LED_1 = 0; LED_2 = 1; LED_3 = 0; 
     }
     if(wiiSteering.faultFlag == 1){

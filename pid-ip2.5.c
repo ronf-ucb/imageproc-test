@@ -24,8 +24,7 @@
 #include "ppool.h"
 #include "cmd.h"
 #include "wii.h"
-
- #include "wiiSteering.c"        //For Tidiness for now
+#include "wiiSteering.h"
 
 #include <stdlib.h> // for malloc
 #include "init.h"  // for Timer1
@@ -46,6 +45,9 @@
 
 // PID control structure
 pidPos pidObjs[NUM_PIDS];
+
+//Wii Steering Structure
+extern wiiSteer wiiSteering;
 
 // structure for reference velocity for leg
 static pidVelLUT  pidVel[NUM_PIDS];

@@ -60,6 +60,8 @@
       <itemPath>cmd.h</itemPath>
       <itemPath>pid-ip2.5.c</itemPath>
       <itemPath>pid-ip2.5.h</itemPath>
+      <itemPath>wiiSteering.c</itemPath>
+      <itemPath>wiiSteering.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

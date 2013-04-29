@@ -45,6 +45,7 @@ zeroPos         =   0x8F
 enableWiiSteer  =   0x90
 setWiiGains     =   0x91
 setWiiPosition  =   0x92                    
+stopWiiSteer    =   0x93                    
 
 #kImWidth = 160
 #kImHeight = 100
@@ -176,9 +177,37 @@ class TestSuite():
             self.radio.tx(dest_addr=self.dest_addr, data=data_out)
             time.sleep(0.2)
 
-    def enableSteering(self)
+    def wiiEnableSteering(self):
         header = chr(kStatusUnused) + chr(enableWiiSteer)
+        data_out = header 
+        if(self.check_conn()):
+            self.radio.tx(dest_addr=self.dest_addr, data=data_out)
+            time.sleep(0.2)
 
+    def wiiStopSteering(self):
+        header = chr(kStatusUnused) + chr(stopWiiSteer)
+        data_out = header 
+        if(self.check_conn()):
+            self.radio.tx(dest_addr=self.dest_addr, data=data_out)
+            time.sleep(0.2)
+
+    def wiiSetPosition(self):
+        header = chr(kStatusUnused) + chr(setWiiPosition)
+        data_out = header 
+        if(self.check_conn()):
+            self.radio.tx(dest_addr=self.dest_addr, data=data_out)
+            time.sleep(0.2)
+
+    def wiiSetGains(self):
+        header = chr(kStatusUnused) + chr(setWiiGains)
+        print 'Enter Gains ,<csv> [Kv, Ktheta]: ',
+        x = raw_input()
+        if len(x):
+            wiiGains = map(int, x.split(','))
+        data_out = header + ''.join(pack("2h",*wiiGains))
+        if(self.check_conn()):
+            self.radio.tx(dest_addr=self.dest_addr, data=data_out)
+            time.sleep(0.2)
 
     def test_motorop(self):
         '''

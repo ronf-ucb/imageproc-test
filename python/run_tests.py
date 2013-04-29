@@ -41,7 +41,7 @@
 import msvcrt, sys, traceback
 import test_suite
 
-
+ 
 #RADIO_DEV_NAME  = '/dev/tty.usbserial-*' or 'COMx'
 #RADIO_DEV_NAME = 'COM1'
 RADIO_DEV_NAME = 'COM9'
@@ -76,7 +76,8 @@ if __name__ == '__main__':
                 ts.PIDStart(duration)
 
             elif keypress == ' ':
-                ts.PIDSTAHP();
+                ts.PIDSTAHP()
+                ts.wiiStopSteering()
 
             elif keypress == 'm':
                 ts.test_motorop()
@@ -97,10 +98,21 @@ if __name__ == '__main__':
 
             elif keypress == 'i':
                 ts.SetProfile()
+            
             elif keypress == 'a':
                 ts.test_amspos()
+            
             elif keypress == 'b':
                 ts.test_wiiblob()
+            
+            elif keypress == 'x':
+                ts.wiiEnableSteering()
+            
+            elif keypress == 'c':
+                ts.wiiSetPosition()
+            
+            elif keypress == 'v':
+                ts.wiiSetGains()
 
             elif keypress == 's':
                 print 'Current sensitvity '+str(sensitvity)+', New sensitvity: ',

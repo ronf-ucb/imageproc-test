@@ -21,6 +21,7 @@
 #define CMD_ENABLE_WII_STEER    0x90
 #define CMD_SET_WII_GAINS       0x91
 #define CMD_SET_WII_POSITION    0x92
+#define CMD_STOP_WII_STEER      0x93
 
 void cmdSetup(void);
 void cmdPushFunc(MacPacket rx_packet);

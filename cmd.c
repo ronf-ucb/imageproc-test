@@ -20,6 +20,7 @@
 #include "ams-enc.h"
 #include "carray.h"
 #include "wii.h"
+#include "wiiSteering.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -40,8 +41,14 @@ extern volatile CircArray fun_queue;
 static unsigned char cmdNop(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static unsigned char cmdWhoAmI(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static unsigned char cmdGetAMSPos(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+
+//Wii Commands
 static unsigned char cmdGetWiiBlobs(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static unsigned char cmdSetWiiSensitivity(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+static unsigned char cmdEnableWiiSteering(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+static unsigned char cmdStopWiiSteering(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+static unsigned char cmdSetWiiGains(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+static unsigned char cmdSetWiiPosition(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 
 //Motor and PID functions
 static unsigned char cmdSetThrustOpenLoop(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
@@ -77,6 +84,7 @@ void cmdSetup(void) {
     cmd_func[CMD_ENABLE_WII_STEER] = &cmdEnableWiiSteering;
     cmd_func[CMD_SET_WII_GAINS] = &cmdSetWiiGains;
     cmd_func[CMD_SET_WII_POSITION] = &cmdSetWiiPosition;
+    cmd_func[CMD_STOP_WII_STEER] = &cmdStopWiiSteering;
 
 }
 
@@ -138,6 +146,17 @@ unsigned char cmdGetWiiBlobs(unsigned char type, unsigned char status,
 unsigned char cmdEnableWiiSteering(unsigned char type, unsigned char status,
         unsigned char length, unsigned char *frame){
     wiiSteering.enableFlag = 1;
+    pidObjs[0].onoff = 1;
+    pidObjs[1].onoff = 1;
+    return 1;
+}
+
+unsigned char cmdStopWiiSteering(unsigned char type, unsigned char status,
+        unsigned char length, unsigned char *frame){
+    wiiSteering.enableFlag = 0;
+    pidObjs[0].onoff = 0;
+    pidObjs[1].onoff = 0;
+    return 1;
 }
 
 unsigned char cmdSetWiiGains(unsigned char type, unsigned char status,
@@ -145,7 +164,8 @@ unsigned char cmdSetWiiGains(unsigned char type, unsigned char status,
     int velGain = frame[0] + (frame[1] << 8);
     int thetaGain = frame[2] + (frame[3] << 8);
     wiiSteering.kV = velGain;
-
+    wiiSteering.kTheta = thetaGain;
+    return 1;
 }
 
 unsigned char cmdSetWiiPosition(unsigned char type, unsigned char status,
@@ -155,13 +175,13 @@ unsigned char cmdSetWiiPosition(unsigned char type, unsigned char status,
     wiiSteering.yDistNominal = wiiSteering.yDist;
     wiiSteering.centroidNominal[0] = wiiSteering.centroid[0];
     wiiSteering.centroidNominal[1] = wiiSteering.centroid[1];
-
+    return 1;
 }
 
 
 unsigned char cmdSetWiiSensitivity(unsigned char type, unsigned char status, 
         unsigned char length, unsigned char *frame){
-    char sensitivity = frame[0];
+    int sensitivity = frame[0];
     wiiSetupAdvance(sensitivity, 0x33);
     return 1;
 }
