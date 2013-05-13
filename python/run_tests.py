@@ -55,6 +55,7 @@ duration = 2000
 sensitvity = 255
 
 
+
 if __name__ == '__main__':
     try:
         ts = test_suite.TestSuite(RADIO_DEV_NAME,            \
@@ -92,6 +93,13 @@ if __name__ == '__main__':
                 print 'Current duration '+str(duration)+', New duration in ms:',
                 duration = int(raw_input())    
                 print 'Current duration '+str(duration)
+
+            elif keypress == 'l':
+                print 'Enter Velocity, Omega: '
+                x = raw_input()
+                if len(x):
+                    vw = map(float,x.split(','))
+                ts.SetDiffSteer(vw)
 
             elif keypress == 'g':
                 ts.SetGains()

@@ -236,6 +236,24 @@ class TestSuite():
             self.radio.tx(dest_addr=self.dest_addr, data=data_out)
             time.sleep(0.2)
 
+    def SetDiffSteer(self, vw):
+        lVel = 1043*vw[0] + 31.29*vw[1]
+        rVel = 1043*vw[0] - 31.29*vw[1]
+
+        print [lVel,rVel]
+        lVelAr = [int(lVel),int(lVel),int(lVel),int(lVel)]
+        rVelAr = [int(rVel),int(rVel),int(rVel),int(rVel)]
+
+        temp = lVelAr + rVelAr
+        print temp
+
+        header = chr(kStatusUnused) + chr(SetVelProfile)
+        data_out = header + ''.join(pack("8h",*temp))
+
+        if(self.check_conn()):
+            self.radio.tx(dest_addr=self.dest_addr, data=data_out)
+            time.sleep(0.2)
+
     def SetProfile(self):
         header = chr(kStatusUnused) + chr(SetVelProfile)
         delta = [0x4000,0x4000,0x4000,0x4000]
