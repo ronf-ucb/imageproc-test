@@ -54,7 +54,7 @@ static pidVelLUT  pidVel[NUM_PIDS];
 
 #define T1_MAX 0xffffff  // max before rollover of 1 ms counter
 // may be glitch in longer missions at rollover
-static volatile unsigned long t1_ticks;
+volatile unsigned long t1_ticks;
 
 // Telemetry objects
 //for battery voltage:

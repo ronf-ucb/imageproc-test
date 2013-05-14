@@ -81,7 +81,7 @@ int main() {
     uart_tx_flag = 0;
     // uartInit(&cmdPushFunc);
 
-    wiiSetupBasic();
+    //wiiSetupBasic();
     amsEncoderSetup();
     mpuSetup(1);
     tiHSetup();
@@ -90,7 +90,15 @@ int main() {
     pidSetup();
 
     LED_2 = 0;
-    
+
+	int j;    
+   for(j=0; j<3; j++){
+        LED_2 = ON;
+        delay_ms(250);
+        LED_2 = OFF;
+        delay_ms(250);
+      }
+
     while(1){
         // Send outgoing radio packets
         radioProcess();
