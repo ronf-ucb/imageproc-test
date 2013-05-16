@@ -250,7 +250,7 @@ unsigned char cmdSetVelProfile(unsigned char type, unsigned char status, unsigne
         idx+=2;
     }
 
-    pidSetVelProfile(0, interval, delta, vel);
+     pidSetVelProfile(0, interval, delta, vel);
 
     for(i = 0; i < NUM_VELS; i ++) {
         vel[i] = frame[idx]+ (frame[idx+1]<<8);

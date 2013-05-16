@@ -271,24 +271,27 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     int j;
     LED_3 = 1;
     interrupt_count++;
+/*
     if(interrupt_count ==2){
-        wiiStartAsyncRead();
+      wiiStartAsyncRead();
     }
+*/
+
     if(interrupt_count == 4) {
         mpuBeginUpdate();
         amsEncoderStartAsyncRead();
-    } else if(interrupt_count == 5) {
-
-        if(wiiSteering.enableFlag == 1){
-            getWiiError();
+    } 
+    else if(interrupt_count == 5)   // run pid every 5th interrupt
+   {
+ /*
+       if(wiiSteering.enableFlag == 1)
+	{   getWiiError();
             setWiiSteer();
         }
-
+*/
         interrupt_count = 0;
-
-        if (t1_ticks++ == T1_MAX) {
-            t1_ticks = 0;
-        }
+        if (t1_ticks++ == T1_MAX) 
+	{     t1_ticks = 0;    }
         
         LED_3 = 0;
         for (j = 0; j< NUM_PIDS; j++) {

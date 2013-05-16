@@ -45,6 +45,7 @@ import test_suite
 #RADIO_DEV_NAME  = '/dev/tty.usbserial-*' or 'COMx'
 #RADIO_DEV_NAME = 'COM1'
 #RADIO_DEV_NAME = 'COM9'
+# ronf COM4
 RADIO_DEV_NAME = 'COM4'
 BS_BAUDRATE = 230400
 
@@ -53,6 +54,7 @@ DEST_ADDR = '\x20\x52'
 
 motorgains = [1800,0,400,0,0,\
               1800,0,400,0,0] #TUNE THESE
+initvel = [0.0, 0.0]
 duration = 2000
 sensitvity = 255
 
@@ -66,9 +68,10 @@ if __name__ == '__main__':
 
         #Initialization
         ts.SetGains(motorgains)
+        ts.SetDiffSteer(initvel)
         print 'p = PIDStart, <sp> = wiiStopSteering, m = motorop'
         print 'z = zeropos, w = test_mpu, t = duration, l vel/omega'
-        print 'g = gains, i= setprofile, q= quit'
+        print 'g = gains, i= setprofile, q= quit, a=amspos'
 
         while msvcrt.kbhit():
             ch = msvcrt.getch()

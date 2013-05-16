@@ -18,11 +18,23 @@
 #define RADIO_SRC_ADDR        0x2102 */
 
 // ronf robot radio addresses
+#ifdef RONF
 #define RADIO_MY_CHAN 0x13
 #define RADIO_PAN_ID 0x2060
 //Hard code in destination address (basestation) for now, update to be dynamic later
 #define RADIO_DEST_ADDR 0x2011
 #define RADIO_SRC_ADDR 0x2052
+#endif
+
+#define MOTILE
+#ifdef MOTILE
+#define RADIO_MY_CHAN 0x0e
+#define RADIO_PAN_ID 0x3000
+//Hard code in destination address (basestation) for now, update to be dynamic later
+#define RADIO_DEST_ADDR 0x3001
+#define RADIO_SRC_ADDR 0x2052
+#endif
+
 
 
 #define RADIO_TXPQ_MAX_SIZE   30

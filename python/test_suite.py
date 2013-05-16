@@ -215,7 +215,8 @@ class TestSuite():
             Test motors open loop
         '''
         header = chr(kStatusUnused) + chr(kTestMotorCmd)
-        thrust = [0x700, 0x700, 2000]
+        # thrust = [0x700, 0x700, 2000]
+        thrust = [0x0, 0x700, 1000]  # check out just one side
         data_out = header + ''.join(pack("3h",*thrust))
         if(self.check_conn()):
             self.radio.tx(dest_addr=self.dest_addr, data=data_out)
@@ -240,12 +241,12 @@ class TestSuite():
         lVel = 1043*vw[0] + 31.29*vw[1]
         rVel = 1043*vw[0] - 31.29*vw[1]
 
-        print [lVel,rVel]
+        print '[lVel,rVel]', lVel,rVel
         lVelAr = [int(lVel),int(lVel),int(lVel),int(lVel)]
         rVelAr = [int(rVel),int(rVel),int(rVel),int(rVel)]
 
         temp = lVelAr + rVelAr
-        print temp
+        print 'left and right velocity setpoints', temp
 
         header = chr(kStatusUnused) + chr(SetVelProfile)
         data_out = header + ''.join(pack("8h",*temp))
